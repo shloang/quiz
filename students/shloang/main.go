@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"errors"
+	"fmt"
 	"log"
 	"os"
 )
@@ -15,7 +16,7 @@ type quizNode struct {
 func main() {
 	quiz, err := readCsvIntoQuizStruct()
 	errorCheck(err)
-
+	cliComms(quiz)
 }
 
 func readCsvIntoQuizStruct() ([]quizNode, error) {
@@ -40,4 +41,15 @@ func errorCheck(e error) {
 	}
 }
 
-func cliCommunication() {}
+func cliComms(q []quizNode) {
+	answer := ""
+	tracker := 0
+	for _, item := range q {
+		fmt.Printf(item.question)
+		fmt.Scanf("%s", &answer)
+		if answer == item.answer {
+			tracker++
+		}
+	}
+	fmt.Printf("%d", tracker)
+}
