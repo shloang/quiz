@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/csv"
 	"errors"
 	"fmt"
 	"log"
 	"os"
+	"time"
 )
 
 type quizNode struct {
@@ -42,14 +44,25 @@ func errorCheck(e error) {
 }
 
 func cliComms(q []quizNode) {
-	answer := ""
+	timer := time.NewTimer(3 * time.Second)
 	tracker := 0
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Printf("Press enter to start the timer")
+	scanner.Scan()
+Iteraton:
 	for _, item := range q {
-		fmt.Printf(item.question)
-		fmt.Scanf("%s", &answer)
-		if answer == item.answer {
-			tracker++
+		select {
+		case <-timer.C:
+			fmt.Printf("timeout\n")
+			break Iteraton
+		default:
+			fmt.Printf(item.question + " is ")
+			scanner.Scan()
+			answer := scanner.Text()
+			if answer == item.answer {
+				tracker++
+			}
 		}
 	}
-	fmt.Printf("%d", tracker)
+	fmt.Printf("%d out of %d right", tracker, len(q))
 }
